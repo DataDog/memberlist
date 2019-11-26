@@ -1,6 +1,7 @@
 package memberlist
 
 import (
+	"fmt"
 	"math"
 	"sync"
 
@@ -419,4 +420,18 @@ func (q *TransmitLimitedQueue) Prune(maxRetain int) {
 		cur.b.Finished()
 		q.deleteItem(cur)
 	}
+}
+
+func (q *TransmitLimitedQueue) Dump() string {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	var dump string
+
+	q.walkReadOnlyLocked(false, func(cur *limitedBroadcast) bool {
+		dump += fmt.Sprintf("broadcast<transmit=%d,msgLen=%d,id=%d,name=%s,bmessage=%s>", cur.transmits, cur.msgLen, cur.id, cur.b.Message())
+		return true
+	})
+
+	return dump
 }

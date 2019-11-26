@@ -20,10 +20,12 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	multierror "github.com/hashicorp/go-multierror"
@@ -203,6 +205,19 @@ func newMemberlist(conf *Config) (*Memberlist, error) {
 	go m.streamListen()
 	go m.packetListen()
 	go m.packetHandler()
+
+	memberlistDebug := make(chan os.Signal, 1)
+	signal.Notify(memberlistDebug, syscall.SIGUSR1)
+	go func() {
+		for {
+			select {
+			case <-memberlistDebug:
+				m.DumpState()
+			}
+
+		}
+	}()
+
 	return m, nil
 }
 
@@ -679,4 +694,8 @@ func (m *Memberlist) ReloadSuspicionRateLimiter(limit rate.Limit, burst int, enf
 	m.suspicionRateEnforce = enforced
 	m.suspicionLimiter.Store(rate.NewLimiter(limit, burst))
 	m.logger.Printf("[INFO] memberlist: reload suspectrate: %v,%v,%v", limit, burst, enforced)
+}
+
+func (m *Memberlist) DumpState() {
+	m.logger.Printf("[DEBUG] memberlist: here is the dump of the broadcast queue: %s", m.broadcasts.Dump())
 }
