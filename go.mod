@@ -3,6 +3,7 @@ module github.com/hashicorp/memberlist
 require (
 	github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/google/btree v1.0.0
 	github.com/hashicorp/go-immutable-radix v1.0.0 // indirect
 	github.com/hashicorp/go-msgpack v0.0.0-20150518234257-fa3f63826f7c
 	github.com/hashicorp/go-multierror v1.0.0
@@ -14,4 +15,5 @@ require (
 	golang.org/x/crypto v0.0.0-20181029021203-45a5f77698d3 // indirect
 	golang.org/x/net v0.0.0-20181023162649-9b4f9f5ad519 // indirect
 	golang.org/x/sys v0.0.0-20181026203630-95b1ffbd15a5 // indirect
+	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 )
